@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { useForm } from "react-hook-form";
 import { RFValue } from "react-native-responsive-fontsize";
 import * as Yup from "yup";
@@ -46,16 +46,13 @@ export function RegisterLoginData() {
 
     const dataKey = "@savepass:logins";
 
-    const oldList = await AsyncStorage.getItem(dataKey);
-    let newPasswordsList = [];
-    if (oldList) {
-      newPasswordsList = [...JSON.parse(oldList)];
-    }
+    const response = await AsyncStorage.getItem(dataKey);
 
-    await AsyncStorage.setItem(
-      dataKey,
-      JSON.stringify([...newPasswordsList, newLoginData])
-    );
+    const parsedData = JSON.parse(response) || [];
+
+    const newLoginListData = [...parsedData, newLoginData];
+
+    await AsyncStorage.setItem(dataKey, JSON.stringify(newLoginListData));
 
     navigate("Home");
   }

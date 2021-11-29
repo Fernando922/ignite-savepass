@@ -34,19 +34,24 @@ export function Home() {
     const savedData = await AsyncStorage.getItem(dataKey);
 
     if (savedData) {
-      setData(JSON.parse(savedData));
-      setSearchListData(JSON.parse(savedData));
+      const parsedData = JSON.parse(savedData);
+
+      setData(parsedData);
+      setSearchListData(parsedData);
     }
   }
 
   function handleFilterLoginData() {
-    const filteredPasswords = data.filter(
-      (item) => item.service_name === searchText
-    );
+    const filteredPasswords = data.filter((item) => {
+      const isValid = item.service_name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
 
-    if (filteredPasswords.length) {
-      setSearchListData(filteredPasswords);
-    }
+      if (isValid) {
+        return item;
+      }
+    });
+    setSearchListData(filteredPasswords);
   }
 
   function handleChangeInputText(text: string) {
